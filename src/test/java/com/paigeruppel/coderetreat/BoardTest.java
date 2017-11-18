@@ -2,6 +2,7 @@ package com.paigeruppel.coderetreat;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
+import static com.paigeruppel.coderetreat.CellState.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,17 +13,20 @@ public class BoardTest {
 
 	@Before
 	public void setup() {
-		underTest = new Board();
+		CellState[][] grid = { { DEAD, DEAD, DEAD, DEAD, DEAD }, { DEAD, DEAD, ALIVE, DEAD, DEAD },
+		{ DEAD, DEAD, ALIVE, DEAD, DEAD }, { DEAD, DEAD, ALIVE, DEAD, DEAD }, { DEAD, DEAD, DEAD, DEAD, DEAD } };
+
+		underTest = new Board(grid);
 	}
 
 	@Test
 	public void shouldReturnCoord00False() {
-		assertFalse(underTest.getOscillatorCoords(0, 0));
+		assertEquals(DEAD, underTest.getGridCoords(0, 0));
 	}
 	
 	@Test
 	public void shouldReturnCoord12True() {
-		assertTrue(underTest.getOscillatorCoords(1, 2));
+		assertEquals(ALIVE, underTest.getGridCoords(1, 2));
 	}
 	
 	@Test
@@ -65,8 +69,36 @@ public class BoardTest {
 		assertThat(underTest.countLivingNeighbors(2, 4), is(0));
 	}
 	
+	@Test
+	public void tickOnBlinkerShouldRotateLivingCells90Degrees() {
+		underTest.tick();
+		
+		assertThat(underTest.getGridCoords(1, 1), is(DEAD));
+		assertThat(underTest.getGridCoords(1, 2), is(DEAD));
+		assertThat(underTest.getGridCoords(1, 3), is(DEAD));
+		assertThat(underTest.getGridCoords(2, 1), is(ALIVE));
+		assertThat(underTest.getGridCoords(2, 2), is(ALIVE));
+		assertThat(underTest.getGridCoords(2, 3), is(ALIVE));
+		assertThat(underTest.getGridCoords(3, 1), is(DEAD));
+		assertThat(underTest.getGridCoords(3, 2), is(DEAD));
+		assertThat(underTest.getGridCoords(3, 3), is(DEAD));
+	}
 	
-	
-	
+
+	@Test
+	public void twoTicksOnBlinkerShouldRestoreToInitialState() {
+		underTest.tick();
+		underTest.tick();
+		
+		assertThat(underTest.getGridCoords(1, 1), is(DEAD));
+		assertThat(underTest.getGridCoords(1, 2), is(ALIVE));
+		assertThat(underTest.getGridCoords(1, 3), is(DEAD));
+		assertThat(underTest.getGridCoords(2, 1), is(DEAD));
+		assertThat(underTest.getGridCoords(2, 2), is(ALIVE));
+		assertThat(underTest.getGridCoords(2, 3), is(DEAD));
+		assertThat(underTest.getGridCoords(3, 1), is(DEAD));
+		assertThat(underTest.getGridCoords(3, 2), is(ALIVE));
+		assertThat(underTest.getGridCoords(3, 3), is(DEAD));
+	}
 	
 }

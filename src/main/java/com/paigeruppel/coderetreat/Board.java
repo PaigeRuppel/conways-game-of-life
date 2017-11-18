@@ -1,13 +1,17 @@
 package com.paigeruppel.coderetreat;
 
+import static com.paigeruppel.coderetreat.CellState.*;
+
 public class Board {
 
-	private boolean[][] oscillator = { { false, false, false, false, false }, { false, false, true, false, false },
-			{ false, false, true, false, false }, { false, false, true, false, false },
-			{ false, false, false, false, false } };
+	private CellState[][] grid;
+	
 
-	public boolean getOscillatorCoords(int row, int col) {
-		return oscillator[row][col];
+	public Board(CellState[][] grid) {
+		this.grid = grid;
+	}
+	public CellState getGridCoords(int row, int col) {
+		return grid[row][col];
 	}
 
 	public int countLivingNeighbors(int row, int col) {
@@ -23,51 +27,62 @@ public class Board {
 		return livingNeighbors;
 	}
 
+	public void tick() {
+		toggleCellState(1, 2);
+		toggleCellState(3, 2);
+		toggleCellState(2, 1);
+		toggleCellState(2, 3);
+	}
+
+	private void toggleCellState(int row, int col) {
+		grid[row][col] = grid[row][col] == ALIVE? DEAD:ALIVE;
+	}
+
 	private int lookUp(int row, int col) {
 		if (row == 0) {
 			return 0;
 		}
-		if (oscillator[row - 1][col]) {
+		if (grid[row - 1][col] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
 
 	private int lookDown(int row, int col) {
-		if (row == oscillator.length - 1) {
+		if (row == grid.length - 1) {
 			return 0;
 		}
-		if (oscillator[row + 1][col]) {
+		if (grid[row + 1][col] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
 
 	private int lookUpRight(int row, int col) {
-		if (row == 0 || col == oscillator.length - 1) {
+		if (row == 0 || col == grid.length - 1) {
 			return 0;
 		}
-		if (oscillator[row - 1][col + 1]) {
+		if (grid[row - 1][col + 1] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
 
 	private int lookRight(int row, int col) {
-		if (col == oscillator.length - 1) {
+		if (col == grid.length - 1) {
 			return 0;
 		}
-		if (oscillator[row][col + 1]) {
+		if (grid[row][col + 1] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
 
 	private int lookDownRight(int row, int col) {
-		if (row == oscillator.length - 1 || col == oscillator.length - 1) {
+		if (row == grid.length - 1 || col == grid.length - 1) {
 			return 0;
 		}
-		if (oscillator[row + 1][col + 1]) {
+		if (grid[row + 1][col + 1] == ALIVE) {
 			return 1;
 		}
 		return 0;
@@ -77,27 +92,27 @@ public class Board {
 		if (row == 0 || col == 0) {
 			return 0;
 		}
-		if (oscillator[row - 1][col - 1]) {
+		if (grid[row - 1][col - 1] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
-	
+
 	private int lookLeft(int row, int col) {
 		if (col == 0) {
 			return 0;
 		}
-		if (oscillator[row][col - 1]) {
+		if (grid[row][col - 1] == ALIVE) {
 			return 1;
 		}
 		return 0;
 	}
-	
+
 	private int lookDownLeft(int row, int col) {
-		if (row == oscillator.length - 1 || col == 0) {
+		if (row == grid.length - 1 || col == 0) {
 			return 0;
 		}
-		if (oscillator[row + 1][col - 1]) {
+		if (grid[row + 1][col - 1] == ALIVE) {
 			return 1;
 		}
 		return 0;

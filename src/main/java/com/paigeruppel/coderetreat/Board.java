@@ -5,11 +5,11 @@ import static com.paigeruppel.coderetreat.CellState.*;
 public class Board {
 
 	private CellState[][] grid;
-	
 
 	public Board(CellState[][] grid) {
 		this.grid = grid;
 	}
+
 	public CellState getGridCoords(int row, int col) {
 		return grid[row][col];
 	}
@@ -28,14 +28,31 @@ public class Board {
 	}
 
 	public void tick() {
-		toggleCellState(1, 2);
-		toggleCellState(3, 2);
-		toggleCellState(2, 1);
-		toggleCellState(2, 3);
+		CellState[][] nextGrid = initializeNextGrid();
+		
+		for (int row = 0; row < grid.length; row++) {
+			for (int col = 0; col < grid[row].length; col++) {
+				if (countLivingNeighbors(row, col) < 2) {
+				}
+			}
+		}
+
+		grid = nextGrid;
+	}
+
+	private CellState[][] initializeNextGrid() {
+		CellState[][] nextGrid = new CellState[grid.length][grid[0].length];
+		for (int row = 0; row < grid.length; row++) {
+			for (int col = 0; col < grid[row].length; col++) {
+				nextGrid[row][col] = DEAD;
+			}
+		}
+
+		return nextGrid;
 	}
 
 	private void toggleCellState(int row, int col) {
-		grid[row][col] = grid[row][col] == ALIVE? DEAD:ALIVE;
+		grid[row][col] = grid[row][col] == ALIVE ? DEAD : ALIVE;
 	}
 
 	private int lookUp(int row, int col) {
